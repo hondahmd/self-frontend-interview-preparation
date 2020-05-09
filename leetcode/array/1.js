@@ -1,6 +1,6 @@
 // url: https://leetcode.com/explore/interview/card/top-interview-questions-easy/92/array/727/
 
-// v1.0
+// v1.0 80ms 37.2mb 45.91%
 var removeDuplicates = function(nums) {
     const length = nums.length;
     let current;
@@ -8,8 +8,7 @@ var removeDuplicates = function(nums) {
         console.log(nums[0]);
         if (nums[0] !== current) {
             current = nums[0];
-            nums.shift();
-            nums.push(current);
+            nums.push(nums.shift());
         } else {
             nums.shift();
         }
