@@ -20,8 +20,8 @@
 - this
     1. 使用call或者apply可以设定在函数运行时this指向哪里
     2. 使用bind可以让函数的this永远指向指定的变量
-    3. 箭头函数的this指向上一层语义作用域，当初始化的时候就被决定并且永远不改变
-    4. object内函数的this指向object
+    3. 箭头函数的this指向上一层语义作用域，当初始化的时候就被决定并且永远不改变，即使使用call也无效
+    4. object内函数的this指向object，嵌套object的this指向遵从‘就近原则’
     5. 对于原型链上的this，仍然指向被调用时所处的object
     6. 当new一个新对象时，this指向这个新实例
 
