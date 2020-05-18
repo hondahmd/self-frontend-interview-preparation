@@ -5,7 +5,8 @@ var twoSum = function(nums, target) {
     const map = {};
     
     for (let i = 0; i < nums.length; i++) {
-        if (map[target - nums[i]] !==undefined) return [i, map[target - nums[i]]];
+        // pay attention to the '!== undefined' here, otherwise if the found index is 0, it won't return
+        if (map[target - nums[i]] !== undefined) return [i, map[target - nums[i]]];
         else map[nums[i]] = i;
     }
 };
