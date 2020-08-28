@@ -7,25 +7,38 @@ const rl = readline.createInterface({
 const longestMale = (matrix, rows, cols) => {
     let result = 0;
 
-    const oneDirection = (func, next, col, row, direction) => {
-        if (matrix[row][col] === 'M') {
-            func(next, col, row, direction);
-        } else {
-            return;
-        }
-    }
-
     const oneStep = (current, col, row, direction) => {
         console.log(row, col);
         if (current > result) result = current;
         if (col >= cols || row >= rows) return;
-        const funcArray = [
-            oneDirection(oneStep, current + 1, col + 1, row, 1),
-            oneDirection(oneStep, current + 1, col, row + 1, 2),
-            oneDirection(oneStep, current + 1, col + 1, row + 1, 3),
-            oneDirection(oneStep, current + 1, col - 1, row + 1, 4),
-        ];
-        funcArray[direction - 1]();
+        if (direction === 1) {
+            if (matrix[row][col] === 'M') {
+                oneStep(current + 1, col + 1, row, 1);
+            } else {
+                return;
+            }
+        }
+        if (direction === 2) {
+            if (matrix[row][col] === 'M') {
+                oneStep(current + 1, col, row + 1, 2);
+            } else {
+                return;
+            }
+        }
+        if (direction === 3) {
+            if (matrix[row][col] === 'M') {
+                oneStep(current + 1, col + 1, row + 1, 3);
+            } else {
+                return;
+            }
+        }
+        if (direction === 4) {
+            if (matrix[row][col] === 'M') {
+                oneStep(current + 1, col - 1, row + 1, 4);
+            } else {
+                return;
+            }
+        }
     }
 
     for (let row = 0; row < rows; row++) {
