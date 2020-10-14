@@ -1,3 +1,5 @@
+// https://leetcode.com/explore/interview/card/top-interview-questions-hard/116/array-and-strings/838/
+// Minimum Window Substring
 
 // Original version. This will work, but costs too much time.
 const minWindow = (s, t) => {
@@ -43,6 +45,42 @@ const minWindow = (s, t) => {
     return isSuit(result) ? result : '';
 }
 
+// passed
+const minWindowV2 = (s, t) => {
+    const map = {};
+    t.split('').forEach((char) => {
+        map[char] ? map[char]++ : map[char] = 1;
+    })
+    console.log(map)
+
+    let start = 0;
+    let end = 0;
+    let counter = t.length;
+    let minLen = Infinity;
+    let minStart = 0;
+
+    while (end < s.length) {
+        if (map[s[end]] > 0) {
+            counter--;
+        }
+        map[s[end]]--;
+        end++;
+
+        while (counter === 0) {
+            if (end - start < minLen) {
+                minStart = start;
+                minLen = end -start;
+            }
+            map[s[start]]++;
+            if (map[s[start]] > 0) {
+                counter++;
+            }
+            start++;
+        }
+    }
+    return minLen !== Infinity ? s.substr(minStart, minLen) : '';
+}
+
 const s = 'ADOBECODEBANC';
 const t = 'ABC';
-console.log(minWindow(s, t));
+console.log(minWindowV2(s, t));
