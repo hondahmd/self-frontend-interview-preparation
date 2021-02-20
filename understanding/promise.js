@@ -1,5 +1,7 @@
 // Simple Promises/A+
+// https://promisesaplus.com/
 
+// 2.1 states
 const PENDING = 'PENDING';
 const RESOLVED = 'RESOLVED';
 const REJECTED = 'REJECTED';
@@ -54,7 +56,9 @@ const resolvePromise = (promise, x, resolve, reject) => {
 class MyPromise {
   constructor(executor) {
     this.status = PENDING;
+    // 1.3
 		this.value = undefined;
+    // 1.5
 		this.reason = undefined;
     this.onFulfilledCBs = [];
     this.onRejectedCBs = [];
