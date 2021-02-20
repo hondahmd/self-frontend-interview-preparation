@@ -27,12 +27,27 @@ const resolvePromise = (promise, x, resolve, reject) => {
   if (xType !== 'object' && xType !== 'function') {
     resolve(x);
   }
-  // TODO: 2.3.3
+  // 2.3.3
   else {
     if (x === null) {
       resolve(x);
     }
 
+    try {
+      const then = x.then;
+      // 2.3.3.3
+      if (typeof then === 'function') {
+        then.call(
+          x,
+          (y) => resolvePromise(promise2, y, resolve, reject),
+          (r) => reject(r),
+        )
+      } else {
+        resolve(x);
+      }
+    } catch (e) {
+      reject(e)
+    }
   }
 }
 
@@ -121,9 +136,17 @@ const promise1 = promise.then((data) => {
 });
 
 const promise2 = promise1.then((data) => {
-  console.log('then ', data)
+  console.log('then ', data);
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(3);
+    }, 1000);
+  })
 }, (e) => {
   console.log(e);
   return e;
 });
 
+const promise3 = promise2.then((data) => {
+  console.log('then ', data);
+})
