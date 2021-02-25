@@ -41,7 +41,7 @@ const resolvePromise = (promise, x, resolve, reject) => {
       if (typeof then === 'function') {
         then.call(
           x,
-          (y) => resolvePromise(promise2, y, resolve, reject),
+          (y) => resolvePromise(promise, y, resolve, reject),
           (r) => reject(r),
         )
       } else {
