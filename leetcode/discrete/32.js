@@ -3,45 +3,44 @@
  * @return {number}
  */
  var longestValidParentheses = function(s) {
-  const results = [];
-
-  const findOne = (index) => {
-      let head = index;
-      let tail = index + 1;
-      while(head >= 0 && tail <= s.length - 1) {
-          if (s[head] === '(' && s[tail] === ')') {
-              head--;
-              tail++;
-          } else {
-              break;
-          }
-      }
-      results.push({ head: head + 1, tail: tail - 1, leng: tail - head - 1 });
+  if (s.length === 0 || s.length === 1) {
+    return 0;
   }
+  let max = 0;
 
-  for (let i = 0; i < s.length - 1; i++) {
-      if (s[i] === '(' && s[i + 1] === ')') {
-          findOne(i);
-      }
+  let temp = s;
+
+  const stack = [];
+  const indexStack = [];
+  let results = [];
+  let index = 0;
+  while (temp) {
+    if (temp[0] === ')' && stack.length > 0 && stack[stack.length - 1] === '(') {
+      results.push(indexStack[stack.length - 1]);
+      results.push(index);
+      stack.pop();
+      indexStack.pop();
+      temp = temp.substring(1);
+    } else {
+      stack.push(temp[0]);
+      indexStack.push(index);
+      temp = temp.substring(1);
+    }
+    index++;
   }
-
-  if (results.length === 0) {
-      return 0;
-  }
-
-  let max = results[0].leng;
-  let acc = results[0].leng;
-  for (let i = 0; i < results.length; i++) {
-      if (i > 0) {
-          if (results[i - 1].tail === results[i].head - 1) {
-              acc += results[i].leng;
-              max = Math.max(max, acc);
-          } else {
-              max = Math.max(max, acc);
-              acc = 0;
-          }
-      }
+  results = results.sort((a, b) => a - b);
+  let current = 1;
+  for (let i = 1; i < results.length; i++) {
+    if (results[i] === results[i - 1] + 1) {
+      current++;
+      max = Math.max(max, current);
+    } else {
+      current = 1;
+    }
   }
 
   return max;
 };
+
+const input = ")(())))(())())";
+console.log(longestValidParentheses(input));
