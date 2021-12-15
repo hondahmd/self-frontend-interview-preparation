@@ -1,37 +1,41 @@
 var scheduleCourse = function (courses) {
-  const findUrgeCourse = (courses) => {
-    let resultIndex = 0;
-    let resultOffset = courses[0][1] - courses[0][0];
-    courses.forEach((course, index) => {
-      if ((course[1] - course[0]) < resultOffset) {
-        resultOffset = course[1] - course[0];
-        resultIndex = index;
+  const terms = [];
+  courses
+    .forEach((course, index) => {
+      const exist = terms.findIndex(term => term.end === course[1]);
+      if (exist !== -1) {
+        terms[exist].list.push(index);
+      } else {
+        terms.push({
+          end: course[1],
+          list: [index],
+        })
       }
     })
-    return resultIndex;
-  };
-
-  const clone = (arr) => arr.map(course => [...course]);
-
-  let result = 0;
-  while (courses.length > 0) {
-    const temp = clone(courses);
-    let loopResult = 0;
-    let current = 0;
-    while (temp.length > 0) {
-      const next = findUrgeCourse(temp);
-      if (current + temp[next][0] <= temp[next][1]) {
-        current += temp[next][0];
-        loopResult++;
+  terms.sort((a, b) => a.end - b.end);
+  terms.forEach(term => {
+    courses.forEach((course, index) => {
+      if (course[0] <= term.end && course[1] > term.end) {
+        term.list.push(index);
       }
-      temp.splice(next, 1);
-    }
-    result = Math.max(result, loopResult);
-    courses.splice(findUrgeCourse(courses), 1);
-  }
+    });
+    term.list = Array.from(new Set(term.list));
+    term.list.sort((a, b) => courses[a][0] - courses[b][0]);
+  });
 
-  return result;
+  let current = 0;
+  const finished = [];
+  terms.forEach(term => {
+    term.list.forEach(index => {
+      if (!finished.includes(index) && current + courses[index][0] <= term.end) {
+        current += courses[index][0];
+        finished.push(index);
+      }
+    })
+  });
+
+  return finished.length;
 };
 
-const courses = [[7, 16], [2, 3], [3, 12], [3, 14], [10, 19], [10, 16], [6, 8], [6, 11], [3, 13], [6, 16]];
+const courses = [[5,15],[3,19],[6,7],[2,10],[5,16],[8,14],[10,11],[2,19]];
 console.log(scheduleCourse(courses));
