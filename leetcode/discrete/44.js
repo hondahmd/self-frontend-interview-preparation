@@ -1,24 +1,29 @@
 var isMatch = function(s, p) {
-  const matchOne = (leftS, leftP) => {
-    if (leftS.length === 0 && leftP.length === 0) {
-      return true;
-    }
+  const dp = Array(p.length + 1).fill(Array(s.length + 1).fill(false));
+  dp[0][0] = true;
 
-    if (leftS[0] === leftP[0] || leftP[0] === '&') {
-      return matchOne(leftS.substring(1), leftP.substring(1));
+  const fillNext = (i, j) => {
+    if (i >= p.length || j >= s.length) return;
+    if (p[i] === '*') {
+      for (let m = j; m < s.length + 1; m++) {
+        dp[i + 1][m] = true;
+      }
+    } else if (p[i] === '?' || p[i] === s[j]) {
+      dp[i + 1][j + 1] = true;
     }
-    if (leftP[0] === '*') {
-      const all = leftS.split('');
-      all.push(' ');
-      return all.some((_, index) => matchOne(leftS.substring(index), leftP.substring(1)))
-    }
+  }
 
-    return false;
-  };
+  dp.forEach((row, i) => {
+    row.forEach((col, j) => {
+      if (col) {
+        fillNext(i, j);
+      }
+    });
+  });
 
-  return matchOne(s, p);
+  return dp[p.length][s.length];
 };
 
-const s = 'aa';
-const p = 'a&';
+const s = 'adceb';
+const p = '*a*b';
 console.log(isMatch(s, p));
