@@ -1,29 +1,40 @@
 var isMatch = function(s, p) {
-  const dp = Array(p.length + 1).fill(Array(s.length + 1).fill(false));
-  dp[0][0] = true;
-
-  const fillNext = (i, j) => {
-    if (i >= p.length || j >= s.length) return;
-    if (p[i] === '*') {
-      for (let m = j; m < s.length + 1; m++) {
-        dp[i + 1][m] = true;
-      }
-    } else if (p[i] === '?' || p[i] === s[j]) {
-      dp[i + 1][j + 1] = true;
-    }
+  const genArr = () => Array(p.length + 1).fill(null)
+  const dp = [];
+  for (let i = 0; i < s.length + 1; i++) {
+    dp[i] = genArr();
   }
+  const newMatchOne = (si, pi) => {
+    if (si === s.length && pi === p.length) {
+      dp[si][pi] = true;
+      return;
+    }
 
-  dp.forEach((row, i) => {
-    row.forEach((col, j) => {
-      if (col) {
-        fillNext(i, j);
+    if (dp[si][pi] !== null) {
+      return;
+    }
+
+    if (s[si] === p[pi] || (p[pi] === '?' && si < s.length)) {
+      dp[si][pi] = true;
+      newMatchOne(si + 1, pi + 1);
+      return;
+    }
+
+    if (p[pi] === '*') {
+      for (let i = si; i <= s.length; i++) {
+        dp[i][pi] = true;
+        newMatchOne(i, pi + 1);
       }
-    });
-  });
+      return;
+    }
 
-  return dp[p.length][s.length];
+    dp[si][pi] = false;
+  };
+  newMatchOne(0, 0);
+
+  return !!dp[s.length][p.length];
 };
 
 const s = 'adceb';
-const p = '*a*b';
+const p = '?';
 console.log(isMatch(s, p));
